@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - OnlyCoffee</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(rgba(111, 78, 55, 0.05), rgba(111, 78, 55, 0.05)),
+                        url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid #eaeaea;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-header a {
+            text-decoration: none;
+            color: #6f4e37;
+            font-size: 28px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-header a:hover {
+            color: #5a3d2b;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-message h2 {
+            color: #6f4e37;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6f4e37;
+            box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .toggle-password:hover {
+            color: #6f4e37;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .remember-me label {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background-color: #6f4e37;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #5a3d2b;
+        }
+
+        .auth-links {
+            margin-top: 30px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .auth-link {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .auth-link a {
+            color: #6f4e37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-link a:hover {
+            color: #5a3d2b;
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6f4e37;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 1px solid #6f4e37;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .back-home:hover {
+            background-color: #6f4e37;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Social login */
+        .social-login {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .social-login p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .social-login p:before,
+        .social-login p:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #eee;
+        }
+
+        .social-login p:before {
+            left: 0;
+        }
+
+        .social-login p:after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .social-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-btn:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .social-btn.facebook:hover {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        .social-btn.google:hover {
+            border-color: #db4437;
+            color: #db4437;
+        }
+
+        /* Admin login section */
+        .admin-login-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6f4e37;
+        }
+
+        .admin-header h4 {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .admin-header p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-admin {
+            flex: 1;
+            padding: 14px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-admin-primary {
+            background-color: #2c1810;
+            color: white;
+        }
+
+        .btn-admin-primary:hover {
+            background-color: #1a100b;
+            transform: translateY(-2px);
+        }
+
+        .btn-admin-secondary {
+            background-color: #4a3526;
+            color: white;
+        }
+
+        .btn-admin-secondary:hover {
+            background-color: #3a281c;
+            transform: translateY(-2px);
+        }
+
+        .admin-credentials {
+            background-color: #f8f5f2;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #6f4e37;
+        }
+
+        .admin-credentials h6 {
+            color: #6f4e37;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .credential-role {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .credential-details {
+            color: #666;
+        }
+
+        .credential-details span {
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-left: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            .admin-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <!-- Logo và quay về trang chủ -->
+    <div class="logo-header">
+        <a th:href="@{/onlycoffee}">
+            <i class="fas fa-coffee"></i>
+            OnlyCoffee
+        </a>
+    </div>
+
+    <!-- Thông điệp chào mừng -->
+    <div class="welcome-message">
+        <h2>Đăng nhập</h2>
+        <p>Chào mừng trở lại với OnlyCoffee</p>
+    </div>
+
+    <!-- Thông báo từ controller -->
+    <div th:if="${errorMessage}" class="alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        [[${errorMessage}]]
+    </div>
+
+    <!-- Thông báo thành công -->
+    <div th:if="${successMessage}" class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        [[${successMessage}]]
+    </div>
+
+    <!-- Thông báo từ Spring Security -->
+    <div th:if="${param.error}" class="alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        Tên đăng nhập hoặc mật khẩu không đúng!
+    </div>
+
+    <div th:if="${param.logout}" class="alert-success">
+        <i class="fas fa-check-circle"></i>
+        Đã đăng xuất thành công!
+    </div>
+
+    <!-- Form đăng nhập - QUAN TRỌNG: ĐÃ SỬA ACTION VÀ CSRF -->
+    <form th:action="@{/onlycoffee/login}" method="post" id="loginForm">
+        <!-- CSRF Token - QUAN TRỌNG: Phải có khi CSRF đang bật -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <!-- Tên đăng nhập hoặc Email -->
+        <div class="form-group">
+            <label for="username">
+                <i class="fas fa-user me-1"></i>Tên đăng nhập
+            </label>
+            <input type="text" id="username" name="username"
+                   placeholder="Nhập tên đăng nhập hoặc email" required>
+        </div>
+
+        <!-- Mật khẩu -->
+        <div class="form-group">
+            <label for="password">
+                <i class="fas fa-lock me-1"></i>Mật khẩu
+            </label>
+            <div class="password-container">
+                <input type="password" id="password" name="password"
+                       placeholder="Nhập mật khẩu" required>
+                <button type="button" class="toggle-password" id="togglePassword">
+                    <i class="far fa-eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Nhớ đăng nhập -->
+        <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember-me">
+            <label for="remember">Ghi nhớ đăng nhập</label>
+        </div>
+
+        <!-- Nút đăng nhập -->
+        <button type="submit" class="btn-login">
+            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+        </button>
+    </form>
+
+    <!-- Phần đăng nhập Admin/Manager -->
+    <div class="admin-login-section">
+        <div class="admin-header">
+            <h4><i class="fas fa-user-shield me-2"></i>Đăng nhập nhanh</h4>
+            <p>Sử dụng tài khoản có sẵn</p>
+        </div>
+
+        <div class="admin-buttons">
+            <button type="button" class="btn-admin btn-admin-primary" onclick="fillCredentials('admin', 'admin123')">
+                <i class="fas fa-user-shield"></i> Admin
+            </button>
+            <button type="button" class="btn-admin btn-admin-secondary" onclick="fillCredentials('manager', 'manager123')">
+                <i class="fas fa-user-tie"></i> Manager
+            </button>
+            <button type="button" class="btn-admin" style="background-color: #6f4e37; color: white;" onclick="fillCredentials('user', 'user123')">
+                <i class="fas fa-user"></i> User
+            </button>
+        </div>
+
+        <div class="admin-credentials">
+            <h6><i class="fas fa-key"></i>Thông tin tài khoản demo</h6>
+            <div class="credential-item">
+                <span class="credential-role">Administrator:</span>
+                <span class="credential-details">admin <span>/ admin123</span></span>
+            </div>
+            <div class="credential-item">
+                <span class="credential-role">Manager:</span>
+                <span class="credential-details">manager <span>/ manager123</span></span>
+            </div>
+            <div class="credential-item">
+                <span class="credential-role">User:</span>
+                <span class="credential-details">user <span>/ user123</span></span>
+            </div>
+            <div style="font-size: 12px; color: #888; margin-top: 10px;">
+                <i class="fas fa-info-circle me-1"></i>Tài khoản được tạo tự động khi chạy ứng dụng
+            </div>
+        </div>
+    </div>
+
+    <!-- Đăng nhập bằng mạng xã hội -->
+    <div class="social-login">
+        <p>Hoặc đăng nhập bằng</p>
+        <div class="social-buttons">
+            <button type="button" class="social-btn facebook" onclick="socialLogin('facebook')">
+                <i class="fab fa-facebook-f"></i>Facebook
+            </button>
+            <button type="button" class="social-btn google" onclick="socialLogin('google')">
+                <i class="fab fa-google"></i>Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Các liên kết -->
+    <div class="auth-links">
+        <p class="auth-link">
+            <a th:href="@{/onlycoffee/register}">
+                <i class="fas fa-user-plus me-1"></i>Chưa có tài khoản? Đăng ký ngay
+            </a>
+        </p>
+
+        <p class="auth-link">
+            <a th:href="@{/onlycoffee/forgot-password}">
+                <i class="fas fa-key me-1"></i>Quên mật khẩu?
+            </a>
+        </p>
+
+        <!-- Nút quay về trang chủ -->
+        <a th:href="@{/onlycoffee}" class="back-home">
+            <i class="fas fa-home me-1"></i>Quay về trang chủ
+        </a>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript tương tác -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Hiển thị/ẩn mật khẩu
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                const icon = this.querySelector('i');
+                if (type === 'text') {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        }
+
+        // 2. Validate form
+        const form = document.getElementById('loginForm');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (!username) {
+                    showError('Vui lòng nhập tên đăng nhập hoặc email');
+                    event.preventDefault();
+                    return false;
+                }
+
+                if (!password) {
+                    showError('Vui lòng nhập mật khẩu');
+                    event.preventDefault();
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        // 3. Hiệu ứng focus cho input
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#6f4e37';
+                this.style.boxShadow = '0 0 0 3px rgba(111, 78, 55, 0.1)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#ddd';
+                this.style.boxShadow = 'none';
+            });
+        });
+    });
+
+    // Hàm hiển thị thông báo lỗi
+    function showError(message) {
+        // Tìm hoặc tạo thẻ thông báo lỗi
+        let errorDiv = document.querySelector('.alert-error');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.className = 'alert-error';
+            const container = document.querySelector('.auth-container');
+            const welcomeMessage = document.querySelector('.welcome-message');
+            container.insertBefore(errorDiv, welcomeMessage.nextSibling);
+        }
+
+        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+        errorDiv.style.display = 'block';
+
+        // Tự động ẩn sau 5 giây
+        setTimeout(() => {
+            errorDiv.style.opacity = '0';
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.parentNode.removeChild(errorDiv);
+                }
+            }, 300);
+        }, 5000);
+    }
+
+    // Hàm điền thông tin đăng nhập nhanh
+    function fillCredentials(username, password) {
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = password;
+
+        // Hiệu ứng loading
+        const submitBtn = document.querySelector('.btn-login');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang đăng nhập...';
+        submitBtn.disabled = true;
+
+        // Thay đổi màu nút
+        submitBtn.style.backgroundColor = '#5a3d2b';
+        submitBtn.style.cursor = 'wait';
+
+        // Tự động submit form sau 1 giây
+        setTimeout(() => {
+            document.getElementById('loginForm').submit();
+        }, 1000);
+
+        // Reset nút sau 2 giây nếu không submit được
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#6f4e37';
+            submitBtn.style.cursor = 'pointer';
+        }, 2000);
+    }
+
+    // Hàm đăng nhập bằng mạng xã hội
+    function socialLogin(provider) {
+        alert(`Đăng nhập bằng ${provider} - Tính năng đang phát triển`);
+
+        // Thêm hiệu ứng cho nút
+        const button = event.target.closest('.social-btn');
+        if (button) {
+            const originalColor = button.style.backgroundColor;
+            button.style.backgroundColor = '#f0f0f0';
+            button.style.transform = 'scale(0.98)';
+
+            setTimeout(() => {
+                button.style.backgroundColor = originalColor;
+                button.style.transform = 'scale(1)';
+            }, 300);
+        }
+    }
+</script>
+</body>
+</html>

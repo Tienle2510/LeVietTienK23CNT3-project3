@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - OnlyCoffee</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(rgba(111, 78, 55, 0.05), rgba(111, 78, 55, 0.05)),
+                        url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid #eaeaea;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-header a {
+            text-decoration: none;
+            color: #6f4e37;
+            font-size: 28px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-header a:hover {
+            color: #5a3d2b;
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            color: #6f4e37;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6f4e37;
+            box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background-color: #6f4e37;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-register:hover {
+            background-color: #5a3d2b;
+        }
+
+        .auth-links {
+            margin-top: 25px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .auth-link {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .auth-link a {
+            color: #6f4e37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-link a:hover {
+            color: #5a3d2b;
+            text-decoration: underline;
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6f4e37;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 1px solid #6f4e37;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .back-home:hover {
+            background-color: #6f4e37;
+            color: white;
+            text-decoration: none;
+        }
+
+        .password-requirements {
+            background-color: #f8f9fa;
+            border-left: 3px solid #6f4e37;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .password-requirements h6 {
+            color: #6f4e37;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+
+        .password-requirements li {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-requirements li i {
+            color: #28a745;
+            font-size: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        /* Success message styling */
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+        }
+
+        /* Field validation styling */
+        .form-group input.valid {
+            border-color: #28a745;
+        }
+
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <!-- Logo và quay về trang chủ -->
+    <div class="logo-header">
+        <a href="/onlycoffee">
+            <i class="fas fa-coffee"></i>
+            OnlyCoffee
+        </a>
+    </div>
+
+    <h2>Đăng ký tài khoản</h2>
+
+    <!-- Thông báo lỗi -->
+    <div th:if="${errorMessage}" class="alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        [[${errorMessage}]]
+    </div>
+
+    <!-- Thông báo thành công -->
+    <div th:if="${successMessage}" class="success-message">
+        <i class="fas fa-check-circle"></i>
+        [[${successMessage}]]
+    </div>
+
+    <!-- Form đăng ký -->
+    <form th:action="@{/onlycoffee/register}" method="post" th:object="${registerDTO}" id="registerForm">
+        <!-- Tên đăng nhập -->
+        <div class="form-group">
+            <label for="username">
+                <i class="fas fa-user me-1"></i>Tên đăng nhập *
+            </label>
+            <input type="text" id="username" th:field="*{username}" required
+                   placeholder="Nhập tên đăng nhập của bạn">
+            <small>Chỉ chứa chữ cái, số, dấu gạch dưới (_), dấu chấm (.) và dấu gạch ngang (-)</small>
+            <div th:if="${#fields.hasErrors('username')}" class="error">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <span th:errors="*{username}"></span>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">
+                <i class="fas fa-envelope me-1"></i>Email *
+            </label>
+            <input type="email" id="email" th:field="*{email}" required
+                   placeholder="example@email.com">
+            <div th:if="${#fields.hasErrors('email')}" class="error">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <span th:errors="*{email}"></span>
+            </div>
+        </div>
+
+        <!-- Mật khẩu -->
+        <div class="form-group">
+            <label for="password">
+                <i class="fas fa-lock me-1"></i>Mật khẩu *
+            </label>
+            <input type="password" id="password" th:field="*{password}" required
+                   placeholder="Nhập mật khẩu của bạn">
+
+            <div class="password-requirements">
+                <h6>Yêu cầu mật khẩu:</h6>
+                <ul>
+                    <li><i class="fas fa-check"></i> Ít nhất 6 ký tự</li>
+                    <li><i class="fas fa-check"></i> Nên có chữ hoa và chữ thường</li>
+                    <li><i class="fas fa-check"></i> Nên có ít nhất một số</li>
+                </ul>
+            </div>
+
+            <div th:if="${#fields.hasErrors('password')}" class="error">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <span th:errors="*{password}"></span>
+            </div>
+        </div>
+
+        <!-- Xác nhận mật khẩu -->
+        <div class="form-group">
+            <label for="confirmPassword">
+                <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu *
+            </label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required
+                   placeholder="Nhập lại mật khẩu">
+        </div>
+
+        <!-- Họ và tên -->
+        <div class="form-group">
+            <label for="fullName">
+                <i class="fas fa-id-card me-1"></i>Họ và tên *
+            </label>
+            <input type="text" id="fullName" th:field="*{fullName}" required
+                   placeholder="Nhập họ và tên đầy đủ">
+            <div th:if="${#fields.hasErrors('fullName')}" class="error">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <span th:errors="*{fullName}"></span>
+            </div>
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="form-group">
+            <label for="phone">
+                <i class="fas fa-phone me-1"></i>Số điện thoại
+            </label>
+            <input type="tel" id="phone" th:field="*{phone}"
+                   placeholder="0123 456 789">
+            <div th:if="${#fields.hasErrors('phone')}" class="error">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <span th:errors="*{phone}"></span>
+            </div>
+        </div>
+
+        <!-- Nút đăng ký -->
+        <button type="submit" class="btn-register">
+            <i class="fas fa-user-plus me-2"></i>Đăng ký tài khoản
+        </button>
+    </form>
+
+    <!-- Các liên kết - SỬA: Sử dụng URL không có /auth -->
+    <div class="auth-links">
+        <p class="auth-link">
+            <!-- URL ĐĂNG NHẬP: /onlycoffee/login -->
+            <a th:href="@{/onlycoffee/login}">
+                <i class="fas fa-sign-in-alt me-1"></i>Đã có tài khoản? Đăng nhập ngay
+            </a>
+        </p>
+
+        <p class="auth-link">
+            <!-- URL QUÊN MẬT KHẨU: /onlycoffee/forgot-password -->
+            <a th:href="@{/onlycoffee/forgot-password}">
+                <i class="fas fa-key me-1"></i>Quên mật khẩu?
+            </a>
+        </p>
+
+        <!-- Nút quay về trang chủ -->
+        <!-- URL TRANG CHỦ: /onlycoffee -->
+        <a href="/onlycoffee" class="back-home">
+            <i class="fas fa-home me-1"></i>Quay về trang chủ
+        </a>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript cho xác thực form -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registerForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        // Kiểm tra mật khẩu khớp
+        function checkPasswordMatch() {
+            if (password.value && confirmPassword.value) {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Mật khẩu không khớp');
+                    confirmPassword.classList.add('invalid');
+                    confirmPassword.classList.remove('valid');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.classList.add('valid');
+                    confirmPassword.classList.remove('invalid');
+                }
+            }
+        }
+
+        // Thêm sự kiện cho các trường mật khẩu
+        password.addEventListener('input', checkPasswordMatch);
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+
+        // Xác thực tên đăng nhập
+        const username = document.getElementById('username');
+        username.addEventListener('input', function() {
+            const pattern = /^[a-zA-Z0-9._-]+$/;
+            if (this.value && !pattern.test(this.value)) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            } else if (this.value) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            }
+        });
+
+        // Xác thực form trước khi submit
+        form.addEventListener('submit', function(event) {
+            checkPasswordMatch();
+
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        }, false);
+
+        // Hiệu ứng hover cho input
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    });
+</script>
+</body>
+</html>

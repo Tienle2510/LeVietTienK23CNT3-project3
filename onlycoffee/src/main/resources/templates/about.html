@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới thiệu - OnlyCoffee</title>
+    <!-- Bootstrap 5.3.0 (phiên bản mới hơn, ít lỗ hổng hơn) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --coffee-color: #6f4e37;
+            --light-coffee: #a78b6f;
+            --light-bg: #f8f5f2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: var(--light-bg);
+        }
+
+        .text-coffee {
+            color: var(--coffee-color) !important;
+        }
+
+        .bg-coffee {
+            background-color: var(--coffee-color) !important;
+        }
+
+        .hero-about {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-about h1 {
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background-color: var(--coffee-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            width: 45%;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--coffee-color);
+            border-radius: 50%;
+            top: 30px;
+        }
+
+        .timeline-item:nth-child(odd):before {
+            right: -55px;
+        }
+
+        .timeline-item:nth-child(even):before {
+            left: -55px;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .team-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 5px solid #f8f9fa;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .values-section {
+            background-color: white;
+            padding: 60px 0;
+            border-radius: 15px;
+            margin: 60px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--coffee-color);
+            margin-bottom: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--coffee-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .btn-coffee {
+            background-color: var(--coffee-color);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-coffee:hover {
+            background-color: var(--light-coffee);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .hero-about h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-about {
+                padding: 80px 0;
+            }
+
+            .timeline:before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                width: calc(100% - 80px);
+                left: 80px !important;
+            }
+
+            .timeline-item:before {
+                left: -55px !important;
+                right: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-coffee fixed-top shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="fas fa-coffee me-2"></i>OnlyCoffee
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/about">Giới thiệu</a></li>
+                <li class="nav-item"><a class="nav-link" href="/products">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact">Liên hệ</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cart"><i class="fas fa-shopping-cart"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-about mt-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">CÂU CHUYỆN CÀ PHÊ CỦA CHÚNG TÔI</h1>
+        <p class="lead fs-4">Hơn 10 năm mang đến những hạt cà phê nguyên chất nhất</p>
+        <a href="#story" class="btn btn-coffee btn-lg mt-3">
+            <i class="fas fa-arrow-down me-2"></i>Khám phá câu chuyện
+        </a>
+    </div>
+</section>
+
+<!-- About Content -->
+<div class="container py-5" id="story">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="text-coffee mb-4 fw-bold">Về OnlyCoffee</h2>
+            <p class="fs-5">OnlyCoffee được thành lập từ năm 2013 với sứ mệnh mang đến cho người yêu cà phê Việt Nam những sản phẩm cà phê nguyên chất, không pha trộn, đảm bảo giữ trọn hương vị tự nhiên.</p>
+            <p class="fs-5">Chúng tôi làm việc trực tiếp với các nông trại tại các vùng trồng cà phê nổi tiếng như Đà Lạt, Buôn Ma Thuột, Cầu Đất để đảm bảo chất lượng từng hạt cà phê.</p>
+            <ul class="list-unstyled fs-5">
+                <li class="mb-2"><i class="fas fa-check text-coffee me-2"></i>100% cà phê nguyên chất</li>
+                <li class="mb-2"><i class="fas fa-check text-coffee me-2"></i>Không chất bảo quản, không phụ gia</li>
+                <li class="mb-2"><i class="fas fa-check text-coffee me-2"></i>Quy trình rang xay hiện đại</li>
+                <li class="mb-2"><i class="fas fa-check text-coffee me-2"></i>Đóng gói hút chân không giữ trọn hương vị</li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                 class="img-fluid rounded shadow-lg" alt="Về chúng tôi">
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row text-center my-5 py-5 bg-coffee text-white rounded">
+        <div class="col-md-3 mb-4">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Năm kinh nghiệm</span>
+        </div>
+        <div class="col-md-3 mb-4">
+            <span class="stat-number">5000+</span>
+            <span class="stat-label">Khách hàng hài lòng</span>
+        </div>
+        <div class="col-md-3 mb-4">
+            <span class="stat-number">15</span>
+            <span class="stat-label">Chi nhánh trên toàn quốc</span>
+        </div>
+        <div class="col-md-3 mb-4">
+            <span class="stat-number">3</span>
+            <span class="stat-label">Quốc gia xuất khẩu</span>
+        </div>
+    </div>
+
+    <!-- Values -->
+    <div class="values-section">
+        <div class="container">
+            <h2 class="text-center text-coffee mb-5 fw-bold">GIÁ TRỊ CỐT LÕI</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="value-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h4 class="text-coffee">Nguyên chất</h4>
+                    <p>Cam kết 100% cà phê nguyên chất, không pha trộn, không chất bảo quản.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="text-coffee">Bền vững</h4>
+                    <p>Hỗ trợ nông dân trồng cà phê bền vững, thân thiện với môi trường.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4 class="text-coffee">Đam mê</h4>
+                    <p>Lan tỏa tình yêu cà phê và văn hóa thưởng thức cà phê đích thực.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <h2 class="text-center text-coffee mb-5 fw-bold">HÀNH TRÌNH PHÁT TRIỂN</h2>
+    <div class="timeline">
+        <div class="timeline-item">
+            <h4 class="text-coffee">2013 - Khởi đầu</h4>
+            <p>OnlyCoffee được thành lập với một cửa hàng nhỏ tại Sài Gòn, bắt đầu từ tình yêu cà phê nguyên chất.</p>
+        </div>
+        <div class="timeline-item">
+            <h4 class="text-coffee">2015 - Mở rộng</h4>
+            <p>Mở thêm 3 chi nhánh tại Hà Nội và Đà Nẵng, khẳng định vị thế trên thị trường.</p>
+        </div>
+        <div class="timeline-item">
+            <h4 class="text-coffee">2018 - Phát triển online</h4>
+            <p>Ra mắt website bán hàng trực tuyến, phục vụ khách hàng trên toàn quốc.</p>
+        </div>
+        <div class="timeline-item">
+            <h4 class="text-coffee">2020 - Xuất khẩu</h4>
+            <p>Bắt đầu xuất khẩu cà phê sang thị trường Nhật Bản và Hàn Quốc với chất lượng được đánh giá cao.</p>
+        </div>
+        <div class="timeline-item">
+            <h4 class="text-coffee">2023 - Hiện tại</h4>
+            <p>Trở thành thương hiệu cà phê nguyên chất hàng đầu Việt Nam với hệ thống 15 chi nhánh.</p>
+        </div>
+    </div>
+
+    <!-- Team -->
+    <h2 class="text-center text-coffee my-5 fw-bold">ĐỘI NGŨ CỦA CHÚNG TÔI</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="team-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+                     class="team-img" alt="Nguyễn Văn A - CEO">
+                <h4 class="text-coffee">Nguyễn Văn A</h4>
+                <p class="text-muted fw-bold">CEO & Người sáng lập</p>
+                <p>15 năm kinh nghiệm trong ngành cà phê, tốt nghiệp chuyên ngành Công nghệ Thực phẩm.</p>
+                <div class="mt-3">
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-coffee"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="team-card">
+                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+                     class="team-img" alt="Trần Thị B - Chuyên gia">
+                <h4 class="text-coffee">Trần Thị B</h4>
+                <p class="text-muted fw-bold">Chuyên gia thử vị</p>
+                <p>Chuyên gia Q-grader với 10 năm kinh nghiệm, đã đào tạo nhiều thế hệ barista chuyên nghiệp.</p>
+                <div class="mt-3">
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-coffee"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="team-card">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+                     class="team-img" alt="Lê Văn C - Quản lý">
+                <h4 class="text-coffee">Lê Văn C</h4>
+                <p class="text-muted fw-bold">Quản lý sản xuất</p>
+                <p>Chuyên gia rang xay cà phê với 12 năm kinh nghiệm, am hiểu sâu về kỹ thuật rang xay.</p>
+                <div class="mt-3">
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-coffee me-3"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-coffee"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="text-center my-5 py-5">
+        <h2 class="text-coffee mb-4">Sẵn sàng trải nghiệm cà phê nguyên chất?</h2>
+        <p class="lead mb-4">Khám phá bộ sưu tập cà phê đặc biệt của chúng tôi ngay hôm nay</p>
+        <a href="/products" class="btn btn-coffee btn-lg">
+            <i class="fas fa-shopping-bag me-2"></i>Mua ngay
+        </a>
+        <a href="/contact" class="btn btn-outline-coffee btn-lg ms-3">
+            <i class="fas fa-phone me-2"></i>Liên hệ tư vấn
+        </a>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold mb-3"><i class="fas fa-coffee me-2"></i>OnlyCoffee</h4>
+                <p>Đem đến những hạt cà phê nguyên chất nhất từ các vùng trồng nổi tiếng Việt Nam.</p>
+                <div class="social-icons">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-tiktok fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold mb-3">Liên kết nhanh</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="/" class="text-white text-decoration-none">Trang chủ</a></li>
+                    <li class="mb-2"><a href="/about" class="text-white text-decoration-none">Giới thiệu</a></li>
+                    <li class="mb-2"><a href="/products" class="text-white text-decoration-none">Sản phẩm</a></li>
+                    <li class="mb-2"><a href="/contact" class="text-white text-decoration-none">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold mb-3">Liên hệ</h5>
+                <p><i class="fas fa-map-marker-alt me-2"></i> 123 Đường Cà Phê, Quận 1, TP.HCM</p>
+                <p><i class="fas fa-phone me-2"></i> 028 1234 5678</p>
+                <p><i class="fas fa-envelope me-2"></i> info@onlycoffee.vn</p>
+            </div>
+        </div>
+        <hr class="bg-white my-4">
+        <div class="text-center">
+            <p class="mb-0">© 2023 OnlyCoffee. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Simple animation for timeline items
+    document.addEventListener('DOMContentLoaded', function() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        timelineItems.forEach(item => {
+            item.style.opacity = '0';
+            if (item.classList.contains('timeline-item:nth-child(odd)')) {
+                item.style.transform = 'translateX(-50px)';
+            } else {
+                item.style.transform = 'translateX(50px)';
+            }
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(item);
+        });
+
+        // Animate stats counter
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.textContent);
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                stat.textContent = Math.floor(current) + (stat.textContent.includes('+') ? '+' : '');
+            }, 20);
+        });
+    });
+</script>
+</body>
+</html>

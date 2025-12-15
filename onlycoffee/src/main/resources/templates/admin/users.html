@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base th:href="@{/onlycoffee/}">
+    <title>Quản lý Users - OnlyCoffee Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #2c1810 0%, #1a0f0a 100%);
+            color: white;
+            position: fixed;
+            width: 250px;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu a {
+            color: #bbb;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu a.active {
+            color: white;
+            background: #6f4e37;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .table th {
+            background: #6f4e37;
+            color: white;
+            border: none;
+        }
+
+        .btn-coffee {
+            background-color: #6f4e37;
+            color: white;
+            border: none;
+        }
+
+        .btn-coffee:hover {
+            background-color: #5a3d2b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h3><i class="fas fa-coffee"></i> OnlyCoffee Admin</h3>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/onlycoffee/admin/dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/onlycoffee/admin/users" class="active">
+            <i class="fas fa-users"></i> Quản lý Users
+        </a>
+        <a href="/onlycoffee/admin/products">
+            <i class="fas fa-coffee"></i> Quản lý Sản phẩm
+        </a>
+        <a href="/onlycoffee/admin/orders">
+            <i class="fas fa-shopping-cart"></i> Quản lý Đơn hàng
+        </a>
+        <a href="/onlycoffee/admin/statistics">
+            <i class="fas fa-chart-bar"></i> Thống kê
+        </a>
+        <a href="/onlycoffee/">
+            <i class="fas fa-home"></i> Về trang chủ
+        </a>
+        <a href="/onlycoffee/logout">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-users"></i> Quản lý Users</h2>
+        <div>
+            <span class="badge bg-primary">Tổng: <span th:text="${totalItems}">0</span> users</span>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" action="/onlycoffee/admin/users" class="row g-3">
+                <div class="col-md-8">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm kiếm theo tên, email, username..."
+                           th:value="${search}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-coffee w-100">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="/onlycoffee/admin/users" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-redo"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Thông tin</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}">1</td>
+                        <td>
+                            <div>
+                                <strong th:text="${user.fullName} ?: 'Chưa cập nhật'">Nguyễn Văn A</strong><br>
+                                <small class="text-muted" th:text="${user.username}">username</small>
+                            </div>
+                        </td>
+                        <td th:text="${user.email}">user@example.com</td>
+                        <td>
+                            <form th:action="@{/admin/users/update-role/{id}(id=${user.id})}"
+                                  method="post" class="d-inline">
+                                <select name="role" class="form-select form-select-sm"
+                                        onchange="this.form.submit()"
+                                        style="width: auto; display: inline-block;">
+                                    <option value="ROLE_ADMIN" th:selected="${user.role == 'ROLE_ADMIN'}">Admin</option>
+                                    <option value="ROLE_MANAGER" th:selected="${user.role == 'ROLE_MANAGER'}">Manager</option>
+                                    <option value="ROLE_USER" th:selected="${user.role == 'ROLE_USER'}">User</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                                    <span th:switch="${user.status}" class="badge">
+                                        <span th:case="'ACTIVE'" class="bg-success">Active</span>
+                                        <span th:case="'INACTIVE'" class="bg-secondary">Inactive</span>
+                                        <span th:case="'BANNED'" class="bg-danger">Banned</span>
+                                    </span>
+                            <form th:action="@{/admin/users/toggle-status/{id}(id=${user.id})}"
+                                  method="post" class="d-inline ms-2">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy')}">01/01/2024</td>
+                        <td>
+                            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav th:if="${totalPages > 1}">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/users(page=${currentPage-1}, size=${param.size}, search=${param.search})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                        class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/admin/users(page=${i}, size=${param.size}, search=${param.search})}"
+                           th:text="${i+1}">1</a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/users(page=${currentPage+1}, size=${param.size}, search=${param.search})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

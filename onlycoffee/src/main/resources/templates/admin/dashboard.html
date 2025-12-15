@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base th:href="@{/onlycoffee/}">
+    <title>Admin Dashboard - OnlyCoffee</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #2c1810 0%, #1a0f0a 100%);
+            color: white;
+            position: fixed;
+            width: 250px;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu a {
+            color: #bbb;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu a.active {
+            color: white;
+            background: #6f4e37;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c1810;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .table th {
+            background: #6f4e37;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h3><i class="fas fa-coffee"></i> OnlyCoffee Admin</h3>
+        <p class="text-muted small mb-0">Welcome, <span th:text="${currentUsername}"></span></p>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/onlycoffee/admin/dashboard" class="active">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/onlycoffee/admin/users">
+            <i class="fas fa-users"></i> Quản lý Users
+        </a>
+        <a href="/onlycoffee/admin/products">
+            <i class="fas fa-coffee"></i> Quản lý Sản phẩm
+        </a>
+        <a href="/onlycoffee/admin/orders">
+            <i class="fas fa-shopping-cart"></i> Quản lý Đơn hàng
+        </a>
+        <a href="/onlycoffee/admin/statistics">
+            <i class="fas fa-chart-bar"></i> Thống kê
+        </a>
+        <a href="/onlycoffee/">
+            <i class="fas fa-home"></i> Về trang chủ
+        </a>
+        <a href="/onlycoffee/logout">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Admin Dashboard</h2>
+        <div class="text-muted">
+            <i class="fas fa-calendar-alt"></i>
+            <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></span>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" th:text="${totalUsers}">0</div>
+                <div class="stat-label">Tổng Users</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <div class="stat-number" th:text="${totalProducts}">0</div>
+                <div class="stat-label">Sản phẩm</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-number" th:text="${totalOrders}">0</div>
+                <div class="stat-label">Đơn hàng</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-number" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + '₫'}">0₫</div>
+                <div class="stat-label">Doanh thu</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Users Table -->
+    <div class="card mt-4">
+        <div class="card-header bg-coffee text-white">
+            <h5 class="mb-0"><i class="fas fa-user-clock"></i> Users mới đăng ký</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${recentUsers}">
+                        <td th:text="${user.id}">1</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <i class="fas fa-user-circle fa-lg"></i>
+                                </div>
+                                <div>
+                                    <strong th:text="${user.fullName}">Nguyễn Văn A</strong>
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${user.username}">user1</td>
+                        <td th:text="${user.email}">user@example.com</td>
+                        <td>
+                                    <span th:switch="${user.role}" class="badge">
+                                        <span th:case="'ROLE_ADMIN'" class="bg-danger">Admin</span>
+                                        <span th:case="'ROLE_MANAGER'" class="bg-warning">Manager</span>
+                                        <span th:case="'ROLE_USER'" class="bg-primary">User</span>
+                                    </span>
+                        </td>
+                        <td>
+                                    <span th:switch="${user.status}" class="badge">
+                                        <span th:case="'ACTIVE'" class="bg-success">Active</span>
+                                        <span th:case="'INACTIVE'" class="bg-secondary">Inactive</span>
+                                        <span th:case="'BANNED'" class="bg-danger">Banned</span>
+                                    </span>
+                        </td>
+                        <td th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy')}">01/01/2024</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3 text-center">
+                <a href="/onlycoffee/admin/users" class="btn btn-outline-coffee">
+                    <i class="fas fa-list"></i> Xem tất cả Users
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+</body>
+</html>

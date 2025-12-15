@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnlyCoffee - Cà phê nguyên chất</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #6f4e37 !important;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: #555 !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #6f4e37 !important;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 50px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-title {
+            color: #6f4e37;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #6f4e37;
+        }
+
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .product-price {
+            color: #d35400;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .btn-coffee {
+            background-color: #6f4e37;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-coffee:hover {
+            background-color: #5a3d2b;
+            color: white;
+        }
+
+        .btn-admin {
+            background-color: #2c1810;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-admin:hover {
+            background-color: #1a100b;
+            color: white;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            color: #6f4e37;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            background-color: #2c1810;
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-title {
+            color: #d4a762;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #d4a762;
+        }
+
+        .copyright {
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .btn-outline-coffee {
+            color: #6f4e37;
+            border-color: #6f4e37;
+        }
+
+        .btn-outline-coffee:hover {
+            background-color: #6f4e37;
+            color: white;
+        }
+
+        .coffee-brown {
+            color: #6f4e37;
+        }
+
+        .bg-coffee {
+            background-color: #6f4e37 !important;
+        }
+
+        .user-welcome {
+            color: #6f4e37;
+            font-weight: 500;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-welcome i {
+            font-size: 1.1rem;
+        }
+
+        .dropdown-user {
+            min-width: 200px;
+        }
+
+        .dropdown-user .dropdown-item {
+            padding: 10px 15px;
+        }
+
+        .dropdown-user .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .admin-badge {
+            background-color: #dc3545;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        .manager-badge {
+            background-color: #ffc107;
+            color: #212529;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                padding: 80px 0;
+            }
+
+            .btn-group-responsive {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .user-welcome {
+                display: none;
+            }
+        }
+
+        /* Flash messages */
+        .flash-message {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .flash-message.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- ========== NAVIGATION ========== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/onlycoffee}">
+            <i class="fas fa-coffee me-2"></i>
+            OnlyCoffee
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/onlycoffee}">
+                        <i class="fas fa-home me-1"></i> Trang chủ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/onlycoffee/products}">
+                        <i class="fas fa-store me-1"></i> Sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/onlycoffee/categories}">
+                        <i class="fas fa-tags me-1"></i> Danh mục
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/onlycoffee/about}">
+                        <i class="fas fa-info-circle me-1"></i> Giới thiệu
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/onlycoffee/contact}">
+                        <i class="fas fa-envelope me-1"></i> Liên hệ
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <!-- Hiển thị khi người dùng đã đăng nhập -->
+                <div sec:authorize="isAuthenticated()">
+                    <div class="d-flex align-items-center">
+                        <!-- Giỏ hàng -->
+                        <a th:href="@{/onlycoffee/cart}" class="btn btn-outline-coffee me-3 position-relative">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge bg-coffee ms-1">3</span>
+                        </a>
+
+                        <!-- Thông báo -->
+                        <div class="dropdown me-3 position-relative">
+                            <a href="#" class="btn btn-outline-coffee" data-bs-toggle="dropdown">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">2</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">Thông báo mới</h6></li>
+                                <li><a class="dropdown-item" href="#">Đơn hàng #1234 đã được xác nhận</a></li>
+                                <li><a class="dropdown-item" href="#">Có sản phẩm mới vừa được thêm</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" href="#">Xem tất cả</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- User dropdown menu -->
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                               data-bs-toggle="dropdown">
+                                <span class="user-welcome">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span sec:authentication="name"></span>
+                                    <!-- Badge cho Admin/Manager -->
+                                    <span sec:authorize="hasRole('ADMIN')" class="admin-badge">ADMIN</span>
+                                    <span sec:authorize="hasRole('MANAGER')" class="manager-badge">MANAGER</span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-user">
+                                <!-- Hiển thị cho tất cả user -->
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/onlycoffee/profile}">
+                                        <i class="fas fa-user"></i> Hồ sơ cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/onlycoffee/orders}">
+                                        <i class="fas fa-shopping-bag"></i> Đơn hàng của tôi
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+
+                                <!-- Hiển thị chỉ cho Admin/Manager -->
+                                <li sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+                                    <a class="dropdown-item" th:href="@{/onlycoffee/admin/dashboard}">
+                                        <i class="fas fa-user-shield"></i> Quản trị viên
+                                    </a>
+                                </li>
+                                <li sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+                                    <a class="dropdown-item" th:href="@{/onlycoffee/admin/users}">
+                                        <i class="fas fa-users"></i> Quản lý người dùng
+                                    </a>
+                                </li>
+                                <li sec:authorize="hasAnyRole('ADMIN', 'MANAGER')"><hr class="dropdown-divider"></li>
+
+                                <!-- Đăng xuất -->
+                                <li>
+                                    <form th:action="@{/onlycoffee/logout}" method="post" class="dropdown-item">
+                                        <button type="submit" class="btn btn-link text-decoration-none p-0 w-100 text-start">
+                                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hiển thị khi chưa đăng nhập -->
+                <div sec:authorize="!isAuthenticated()" class="btn-group-responsive">
+                    <a th:href="@{/onlycoffee/login}" class="btn btn-coffee me-2">
+                        <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                    </a>
+                    <a th:href="@{/onlycoffee/register}" class="btn btn-outline-coffee">
+                        <i class="fas fa-user-plus me-1"></i> Đăng ký
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== FLASH MESSAGES ========== -->
+<div th:if="${param.success}" class="flash-message alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>
+    <strong>Thành công!</strong> Đăng nhập thành công.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
+<div th:if="${param.error}" class="flash-message alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <strong>Lỗi!</strong> Tên đăng nhập hoặc mật khẩu không đúng.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
+<div th:if="${param.logout}" class="flash-message alert alert-info alert-dismissible fade show" role="alert">
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Thành công!</strong> Đã đăng xuất thành công.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">THƯỞNG THỨC HƯƠNG VỊ CÀ PHÊ ĐÍCH THỰC</h1>
+        <p class="hero-subtitle">Chúng tôi mang đến những hạt cà phê nguyên chất nhất, được tuyển chọn từ các vùng trồng nổi tiếng Việt Nam</p>
+        <a th:href="@{/onlycoffee/products}" class="btn btn-coffee btn-lg">
+            <i class="fas fa-shopping-bag me-2"></i> MUA NGAY
+        </a>
+
+        <!-- Nút Admin Panel chỉ hiện cho Admin/Manager -->
+        <div sec:authorize="hasAnyRole('ADMIN', 'MANAGER')" class="mt-3">
+            <a th:href="@{/onlycoffee/admin/dashboard}" class="btn btn-admin btn-lg">
+                <i class="fas fa-user-shield me-2"></i> TRANG QUẢN TRỊ
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FEATURED PRODUCTS ========== -->
+<section class="container py-5">
+    <h2 class="section-title">SẢN PHẨM NỔI BẬT</h2>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1587734195507-6f5e8a2543c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                     class="product-img" alt="Arabica Đà Lạt">
+                <div class="p-3">
+                    <h5 class="fw-bold">Arabica Đà Lạt Premium</h5>
+                    <p class="text-muted small">Hương thơm nhẹ nhàng, vị chua thanh đặc trưng</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">350.000₫</span>
+                        <button class="btn btn-coffee btn-sm add-to-cart" data-product="Arabica Đà Lạt Premium" data-price="350000">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1587734195507-6f5e8a2543c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                     class="product-img" alt="Robusta Buôn Ma Thuột">
+                <div class="p-3">
+                    <h5 class="fw-bold">Robusta Buôn Ma Thuột</h5>
+                    <p class="text-muted small">Vị đậm đà, đắng mạnh, thơm nồng</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">250.000₫</span>
+                        <button class="btn btn-coffee btn-sm add-to-cart" data-product="Robusta Buôn Ma Thuột" data-price="250000">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1587734195507-6f5e8a2543c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                     class="product-img" alt="Moka Cầu Đất">
+                <div class="p-3">
+                    <h5 class="fw-bold">Moka Cầu Đất</h5>
+                    <p class="text-muted small">Hương trái cây, vị chua dịu, hậu vị ngọt</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">450.000₫</span>
+                        <button class="btn btn-coffee btn-sm add-to-cart" data-product="Moka Cầu Đất" data-price="450000">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1587734195507-6f5e8a2543c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                     class="product-img" alt="Culi Arabica">
+                <div class="p-3">
+                    <h5 class="fw-bold">Culi Arabica</h5>
+                    <p class="text-muted small">Hương chocolate, vị đắng nhẹ, hậu vị ngọt kéo dài</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">300.000₫</span>
+                        <button class="btn btn-coffee btn-sm add-to-cart" data-product="Culi Arabica" data-price="300000">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/onlycoffee/products}" class="btn btn-outline-coffee">
+            <i class="fas fa-eye me-2"></i> XEM TẤT CẢ SẢN PHẨM
+        </a>
+    </div>
+</section>
+
+<!-- ========== CATEGORIES ========== -->
+<section class="container py-5 bg-light rounded">
+    <h2 class="section-title">DANH MỤC SẢN PHẨM</h2>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h5>Cà Phê Hạt</h5>
+                <p class="small text-muted">Hạt cà phê nguyên chất từ các vùng trồng nổi tiếng</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-mortar-pestle"></i>
+                </div>
+                <h5>Cà Phê Xay</h5>
+                <p class="small text-muted">Cà phê xay sẵn tiện lợi cho việc pha chế</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h5>Cà Phê Đặc Sản</h5>
+                <p class="small text-muted">Cà phê đặc sản vùng miền cao cấp</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h5>Phụ Kiện</h5>
+                <p class="small text-muted">Dụng cụ pha chế cà phê chuyên nghiệp</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== ADMIN QUICK ACCESS (Chỉ hiện cho Admin/Manager) ========== -->
+<section sec:authorize="hasAnyRole('ADMIN', 'MANAGER')" class="container py-5">
+    <h2 class="section-title">QUẢN TRỊ NHANH</h2>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="category-card bg-dark text-white">
+                <div class="category-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h5>Quản lý người dùng</h5>
+                <p class="small">Quản lý tài khoản người dùng và phân quyền</p>
+                <a th:href="@{/onlycoffee/admin/users}" class="btn btn-coffee btn-sm mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Truy cập
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="category-card bg-dark text-white">
+                <div class="category-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h5>Thống kê</h5>
+                <p class="small">Xem thống kê doanh thu và đơn hàng</p>
+                <a th:href="@{/onlycoffee/admin/dashboard}" class="btn btn-coffee btn-sm mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Truy cập
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="category-card bg-dark text-white">
+                <div class="category-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h5>Cài đặt hệ thống</h5>
+                <p class="small">Cấu hình hệ thống và cài đặt</p>
+                <a th:href="@{/onlycoffee/admin/settings}" class="btn btn-coffee btn-sm mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Truy cập
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="container py-5">
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="mb-3">
+                <i class="fas fa-shipping-fast fa-3x coffee-brown"></i>
+            </div>
+            <h5>Giao Hàng Miễn Phí</h5>
+            <p class="text-muted">Miễn phí vận chuyển cho đơn hàng từ 300.000₫</p>
+        </div>
+
+        <div class="col-md-4 text-center mb-4">
+            <div class="mb-3">
+                <i class="fas fa-award fa-3x coffee-brown"></i>
+            </div>
+            <h5>Chất Lượng Đảm Bảo</h5>
+            <p class="text-muted">Cam kết 100% cà phê nguyên chất, không pha trộn</p>
+        </div>
+
+        <div class="col-md-4 text-center mb-4">
+            <div class="mb-3">
+                <i class="fas fa-headset fa-3x coffee-brown"></i>
+            </div>
+            <h5>Hỗ Trợ 24/7</h5>
+            <p class="text-muted">Đội ngũ tư vấn nhiệt tình, sẵn sàng hỗ trợ</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="footer-title">
+                    <i class="fas fa-coffee me-2"></i>OnlyCoffee
+                </h5>
+                <p>Chuyên cung cấp các loại cà phê nguyên chất, đặc sản vùng miền với chất lượng tốt nhất.</p>
+                <div class="social-icons mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-tiktok fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="footer-title">LIÊN KẾT</h5>
+                <ul class="footer-links">
+                    <li><a th:href="@{/onlycoffee}">Trang chủ</a></li>
+                    <li><a th:href="@{/onlycoffee/products}">Sản phẩm</a></li>
+                    <li><a th:href="@{/onlycoffee/about}">Giới thiệu</a></li>
+                    <li><a th:href="@{/onlycoffee/contact}">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="footer-title">CHÍNH SÁCH</h5>
+                <ul class="footer-links">
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách đổi trả</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="footer-title">LIÊN HỆ</h5>
+                <ul class="footer-links">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Đường ABC, Quận 1, TP.HCM</li>
+                    <li><i class="fas fa-phone me-2"></i> 1900 1234</li>
+                    <li><i class="fas fa-envelope me-2"></i> info@onlycoffee.vn</li>
+                    <li><i class="fas fa-clock me-2"></i> 8:00 - 22:00 hàng ngày</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>© 2024 OnlyCoffee. Tất cả các quyền được bảo lưu.</p>
+            <p class="mt-2">
+                <span sec:authorize="isAuthenticated()">
+                    Đăng nhập với quyền:
+                    <span sec:authentication="authorities" class="badge bg-info ms-1"></span>
+                </span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide flash messages
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(message => {
+            setTimeout(() => {
+                message.classList.add('fade-out');
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.parentNode.removeChild(message);
+                    }
+                }, 500);
+            }, 5000);
+        });
+
+        // Add to cart functionality
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        const cartBadge = document.querySelector('.badge.bg-coffee');
+
+        // Kiểm tra xem user đã đăng nhập chưa
+        const isAuthenticated = document.querySelector('[sec\\:authorize="isAuthenticated()"]') !== null;
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productName = this.getAttribute('data-product');
+                const productPrice = parseInt(this.getAttribute('data-price'));
+
+                if (!isAuthenticated) {
+                    // Chưa đăng nhập - yêu cầu đăng nhập
+                    if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng. Đi đến trang đăng nhập?')) {
+                        window.location.href = '/onlycoffee/login';
+                    }
+                    return;
+                }
+
+                // Đã đăng nhập - thêm vào giỏ hàng
+                let cartCount = parseInt(cartBadge.textContent) || 0;
+                cartCount++;
+                cartBadge.textContent = cartCount;
+
+                // Hiển thị thông báo
+                const formattedPrice = productPrice.toLocaleString('vi-VN') + '₫';
+                showToast('success', `Đã thêm "${productName}" vào giỏ hàng`, `Giá: ${formattedPrice}`);
+
+                // Gửi request đến server (AJAX)
+                addToCartOnServer(productName, productPrice);
+            });
+        });
+
+        function showToast(type, title, message) {
+            // Tạo toast element
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-bg-${type} border-0 position-fixed`;
+            toast.style.top = '20px';
+            toast.style.right = '20px';
+            toast.style.zIndex = '1060';
+
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong><br>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+
+            // Khởi tạo và hiển thị toast
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+
+            // Xóa toast sau khi ẩn
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
+
+        function addToCartOnServer(productName, price) {
+            // Gửi AJAX request để thêm vào giỏ hàng
+            fetch('/onlycoffee/api/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]')?.value
+                },
+                body: JSON.stringify({
+                    productName: productName,
+                    price: price,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Added to cart:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Update user status display
+        updateUserStatus();
+
+        function updateUserStatus() {
+            // Cập nhật thời gian đăng nhập, etc.
+            const lastLoginElement = document.getElementById('last-login-time');
+            if (lastLoginElement) {
+                const now = new Date();
+                lastLoginElement.textContent = now.toLocaleString('vi-VN');
+            }
+        }
+    });
+</script>
+</body>
+</html>
