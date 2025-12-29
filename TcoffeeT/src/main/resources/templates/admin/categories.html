@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #343a40;
+            color: white;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 20px;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: #495057;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar p-0">
+            <div class="p-3">
+                <h4>☕ Admin Panel</h4>
+                <hr class="bg-light">
+            </div>
+            <nav class="nav flex-column">
+                <a href="/admin/dashboard">📊 Dashboard</a>
+                <a href="/admin/products">📦 Quản lý sản phẩm</a>
+                <a href="/admin/categories" class="active bg-primary">🗂️ Danh mục</a>
+                <a href="#">👥 Quản lý người dùng</a>
+                <a href="#">💰 Quản lý đơn hàng</a>
+                <a href="/">🏠 Về trang chủ</a>
+                <a href="/logout">🚪 Đăng xuất</a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-10 p-4">
+            <h1><i class="fas fa-folder"></i> Quản lý danh mục</h1>
+            <p class="text-muted">Quản lý danh mục sản phẩm cho cửa hàng cà phê</p>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Chức năng đang được phát triển. Hiện tại có 4 danh mục mặc định:
+                <strong>Cà phê, Trà, Nước ép, Bánh ngọt</strong>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-coffee fa-3x text-primary mb-3"></i>
+                            <h5>Cà phê</h5>
+                            <p class="text-muted">Các loại cà phê</p>
+                            <span class="badge bg-secondary">5 sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-mug-hot fa-3x text-success mb-3"></i>
+                            <h5>Trà</h5>
+                            <p class="text-muted">Các loại trà</p>
+                            <span class="badge bg-secondary">3 sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-glass-whiskey fa-3x text-warning mb-3"></i>
+                            <h5>Nước ép</h5>
+                            <p class="text-muted">Nước ép trái cây</p>
+                            <span class="badge bg-secondary">2 sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-birthday-cake fa-3x text-danger mb-3"></i>
+                            <h5>Bánh ngọt</h5>
+                            <p class="text-muted">Bánh các loại</p>
+                            <span class="badge bg-secondary">2 sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Thêm danh mục mới (Sắp có)</h5>
+                </div>
+                <div class="card-body">
+                    <p>Chức năng thêm/sửa/xóa danh mục sẽ được cập nhật trong phiên bản tiếp theo.</p>
+                    <button class="btn btn-primary" disabled>
+                        <i class="fas fa-plus"></i> Thêm danh mục
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm sản phẩm mới - Coffee Elegance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --coffee-dark: #4A2C2A;
+            --coffee-medium: #8B4513;
+            --coffee-light: #D2691E;
+            --coffee-cream: #F5DEB3;
+            --accent-gold: #D4AF37;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--coffee-dark) 0%, var(--coffee-medium) 100%);
+            color: white;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 240px;
+            z-index: 1000;
+        }
+
+        .sidebar .logo {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .logo-img i {
+            font-size: 28px;
+            color: var(--coffee-dark);
+        }
+
+        .sidebar a {
+            color: var(--coffee-cream);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 5px 15px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar a:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(212, 175, 55, 0.2);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .sidebar a:hover:before {
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #E6C100 100%);
+            color: var(--coffee-dark);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .sidebar a i {
+            width: 25px;
+            font-size: 18px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        .sidebar .divider {
+            margin: 20px 25px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 240px;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+        }
+
+        /* Header */
+        .content-header {
+            background: white;
+            padding: 25px 30px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--accent-gold);
+        }
+
+        /* Form container */
+        .form-container {
+            background: white;
+            padding: 30px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--coffee-cream);
+        }
+
+        .form-section-header i {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--coffee-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .form-section-header h5 {
+            margin: 0;
+            color: var(--coffee-dark);
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--coffee-dark);
+            margin-bottom: 8px;
+        }
+
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+        }
+
+        /* Buttons */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--coffee-light) 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+            color: white;
+        }
+
+        .btn-outline-gold {
+            background: white;
+            border: 2px solid var(--accent-gold);
+            color: var(--coffee-dark);
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-gold:hover {
+            background: var(--accent-gold);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Preview image */
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            border: 2px dashed var(--coffee-cream);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        /* Alert */
+        .custom-alert {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- SIDEBAR -->
+        <div class="sidebar p-0">
+            <div class="logo">
+                <div class="logo-img">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <h4 class="mb-1">Coffee Elegance</h4>
+                <p class="text-light small opacity-75">Premium Coffee Management</p>
+            </div>
+            <nav class="nav flex-column mt-3">
+                <a th:href="@{/admin/dashboard}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a th:href="@{/admin/products}" class="active">
+                    <i class="fas fa-mug-hot"></i> Quản lý sản phẩm
+                </a>
+                <a th:href="@{/admin/users}">
+                    <i class="fas fa-users"></i> Quản lý người dùng
+                </a>
+                <a href="#">
+                    <i class="fas fa-receipt"></i> Quản lý đơn hàng
+                </a>
+                <a th:href="@{/admin/categories}">
+                    <i class="fas fa-tags"></i> Danh mục
+                </a>
+                <div class="divider"></div>
+                <a th:href="@{/}">
+                    <i class="fas fa-store"></i> Về cửa hàng
+                </a>
+                <a th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- HEADER -->
+            <div class="content-header animate-fadeInUp">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1" style="color: var(--coffee-dark);">
+                            <a th:href="@{/admin/products}" class="text-decoration-none me-3">
+                                <i class="fas fa-arrow-left text-secondary"></i>
+                            </a>
+                            <i class="fas fa-plus-circle me-2" style="color: var(--accent-gold);"></i>
+                            Thêm sản phẩm mới
+                        </h5>
+                        <small class="text-muted">Nhập thông tin sản phẩm mới cho cửa hàng</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THÔNG BÁO -->
+            <div class="px-4">
+                <div th:if="${success}" class="alert alert-success custom-alert animate-fadeInUp">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Thành công!</strong> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger custom-alert animate-fadeInUp">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Có lỗi!</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+
+            <!-- FORM THÊM SẢN PHẨM -->
+            <div class="form-container animate-fadeInUp" style="animation-delay: 0.1s;">
+                <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <!-- THÔNG TIN CƠ BẢN -->
+                        <div class="col-md-8">
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <i class="fas fa-info-circle"></i>
+                                    <h5>Thông tin cơ bản</h5>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label required">Tên sản phẩm</label>
+                                    <input type="text" class="form-control" name="name" required
+                                           placeholder="Nhập tên sản phẩm">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label required">Giá bán (VND)</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="price"
+                                                   min="0" required placeholder="0">
+                                            <span class="input-group-text">₫</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Giảm giá (%)</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="discountPercent"
+                                                   min="0" max="100" value="0">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Mô tả sản phẩm</label>
+                                    <textarea class="form-control" name="description" rows="4"
+                                              placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- THÔNG TIN BỔ SUNG -->
+                        <div class="col-md-4">
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <i class="fas fa-cog"></i>
+                                    <h5>Cài đặt</h5>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label required">Danh mục</label>
+                                    <select class="form-select" name="categoryId">
+                                        <option value="1">Cà phê</option>
+                                        <option value="2">Trà</option>
+                                        <option value="3">Nước ép</option>
+                                        <option value="4">Bánh ngọt</option>
+                                        <option value="5">Khác</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label required">Số lượng tồn kho</label>
+                                    <input type="number" class="form-control" name="stockQuantity"
+                                           min="0" value="0" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">URL hình ảnh</label>
+                                    <input type="text" class="form-control" name="imageUrl"
+                                           placeholder="https://example.com/image.jpg">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Tải ảnh lên</label>
+                                    <input type="file" class="form-control" name="imageFile"
+                                           accept="image/*" onchange="previewImage(this)">
+                                    <small class="text-muted">Hỗ trợ: JPG, PNG, GIF (tối đa 5MB)</small>
+                                </div>
+
+                                <!-- Image preview -->
+                                <div class="image-preview" id="imagePreview">
+                                    <div class="text-center">
+                                        <i class="fas fa-image fa-3x text-muted"></i>
+                                        <p class="text-muted mt-2 mb-0">Xem trước ảnh</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="isAvailable" id="isAvailable" checked>
+                                            <label class="form-check-label" for="isAvailable">
+                                                Có sẵn
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="isFeatured" id="isFeatured">
+                                            <label class="form-check-label" for="isFeatured">
+                                                Nổi bật
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NÚT HÀNH ĐỘNG -->
+                    <div class="form-section pt-4 border-top">
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/admin/products}" class="btn btn-outline-gold">
+                                <i class="fas fa-times me-2"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-gold">
+                                <i class="fas fa-save me-2"></i> Lưu sản phẩm
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Image preview function
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                    <p class="text-muted mt-2 mb-0">Xem trước ảnh</p>
+                </div>
+            `;
+        }
+    }
+
+    // Auto dismiss alerts
+    setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(alert => {
+            new bootstrap.Alert(alert).close();
+        });
+    }, 5000);
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const price = document.querySelector('input[name="price"]');
+        if (price.value < 0) {
+            e.preventDefault();
+            alert('Giá sản phẩm không được âm!');
+            price.focus();
+        }
+    });
+</script>
+</body>
+</html>

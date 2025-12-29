@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --coffee-dark: #4A2C2A;
+            --coffee-medium: #8B4513;
+            --coffee-light: #D2691E;
+            --coffee-cream: #F5DEB3;
+            --accent-gold: #D4AF37;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--coffee-dark) 0%, var(--coffee-medium) 100%);
+            color: white;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 240px;
+            z-index: 1000;
+        }
+
+        .sidebar .logo {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .logo-img i {
+            font-size: 28px;
+            color: var(--coffee-dark);
+        }
+
+        .sidebar a {
+            color: var(--coffee-cream);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 5px 15px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar a:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(212, 175, 55, 0.2);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .sidebar a:hover:before {
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #E6C100 100%);
+            color: var(--coffee-dark);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .sidebar a i {
+            width: 25px;
+            font-size: 18px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px 30px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--accent-gold);
+        }
+
+        .scrollable-table {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-img-compact {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--coffee-cream);
+        }
+
+        .badge-sm {
+            font-size: 0.75em;
+            padding: 4px 8px;
+        }
+
+        .btn-action-sm {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stock-indicator {
+            font-size: 0.85em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .stock-low {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+        .stock-medium {
+            background: linear-gradient(135deg, #ffd93d, #ffed4e);
+            color: var(--coffee-dark);
+        }
+        .stock-high {
+            background: linear-gradient(135deg, #6bcf7f, #8ed9a3);
+            color: white;
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--coffee-light));
+            border-radius: 15px 15px 0 0;
+        }
+
+        .price-compact {
+            font-size: 0.95em;
+            font-weight: 700;
+        }
+
+        .old-price {
+            font-size: 0.8em;
+            color: #95a5a6;
+            text-decoration: line-through;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- SIDEBAR -->
+        <div class="sidebar p-0">
+            <div class="logo">
+                <div class="logo-img">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <h4 class="mb-1">Coffee Elegance</h4>
+                <p class="text-light small opacity-75">Premium Coffee Management</p>
+            </div>
+            <nav class="nav flex-column mt-3">
+                <a th:href="@{/admin/dashboard}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a th:href="@{/admin/products}" class="active">
+                    <i class="fas fa-mug-hot"></i> Quản lý sản phẩm
+                </a>
+                <a th:href="@{/admin/users}">
+                    <i class="fas fa-users"></i> Quản lý người dùng
+                </a>
+                <a href="#">
+                    <i class="fas fa-receipt"></i> Quản lý đơn hàng
+                </a>
+                <a th:href="@{/admin/categories}">
+                    <i class="fas fa-tags"></i> Danh mục
+                </a>
+                <div class="mt-4 pt-3 border-top border-secondary">
+                    <a th:href="@{/}">
+                        <i class="fas fa-store"></i> Về cửa hàng
+                    </a>
+                    <a th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- HEADER -->
+            <div class="content-header animate-fadeInUp">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1" style="color: var(--coffee-dark);">
+                            <i class="fas fa-mug-hot me-2" style="color: var(--accent-gold);"></i>
+                            Quản lý sản phẩm
+                        </h5>
+                        <small class="text-muted">
+                            Tổng: <span th:text="${#lists.size(products)}" class="fw-bold">0</span> sản phẩm
+                        </small>
+                    </div>
+                    <div>
+                        <a th:href="@{/admin/products/add}" class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i> Thêm sản phẩm mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THÔNG BÁO -->
+            <div class="px-4">
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show animate-fadeInUp">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Thành công!</strong> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show animate-fadeInUp">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Lỗi!</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+
+            <!-- BẢNG SẢN PHẨM -->
+            <div class="px-4 mt-3">
+                <div class="scrollable-table animate-fadeInUp" style="animation-delay: 0.1s;">
+                    <table class="table table-hover mb-0">
+                        <thead style="position: sticky; top: 0; background: white; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <tr style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                            <th width="50" class="py-3">ID</th>
+                            <th width="70" class="py-3">Ảnh</th>
+                            <th class="py-3">Tên sản phẩm</th>
+                            <th width="120" class="py-3">Giá</th>
+                            <th width="100" class="py-3">Tồn kho</th>
+                            <th width="110" class="py-3">Trạng thái</th>
+                            <th width="80" class="py-3">DM</th>
+                            <th width="140" class="py-3 text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${products}" style="transition: all 0.3s ease;">
+                            <td class="align-middle">
+                                <span class="badge bg-secondary">#[[${product.id}]]</span>
+                            </td>
+                            <td class="align-middle">
+                                <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/50/8B4513/FFFFFF?text=Coffee'}"
+                                     class="product-img-compact" alt="SP">
+                            </td>
+                            <td class="align-middle">
+                                <div class="fw-semibold" style="color: var(--coffee-dark); font-size: 0.95em;">
+                                    [[${product.name}]]
+                                </div>
+                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                    <span th:if="${product.isFeatured}"
+                                          class="badge bg-warning badge-sm">
+                                        <i class="fas fa-star fa-xs"></i> Nổi bật
+                                    </span>
+                                    <span th:if="${product.discountPercent > 0}"
+                                          class="badge bg-danger badge-sm">
+                                        <i class="fas fa-tag fa-xs"></i> -[[${product.discountPercent}]]%
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div th:if="${product.discountPercent > 0}">
+                                    <div class="old-price">
+                                        [[${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}]]₫
+                                    </div>
+                                    <div class="price-compact text-danger">
+                                        [[${#numbers.formatDecimal(product.price * (100 - product.discountPercent) / 100, 0, 'COMMA', 0, 'POINT')}]]₫
+                                    </div>
+                                </div>
+                                <div th:unless="${product.discountPercent > 0}">
+                                    <div class="price-compact" style="color: var(--coffee-dark);">
+                                        [[${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}]]₫
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <span th:text="${product.stockQuantity}"
+                                      class="stock-indicator"
+                                      th:classappend="${product.stockQuantity > 50} ? 'stock-high' :
+                                                      (${product.stockQuantity > 10} ? 'stock-medium' : 'stock-low')">
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                <span th:if="${product.isAvailable}"
+                                      class="badge bg-success badge-sm">
+                                    <i class="fas fa-check fa-xs"></i> Có sẵn
+                                </span>
+                                <span th:unless="${product.isAvailable}"
+                                      class="badge bg-secondary badge-sm">
+                                    <i class="fas fa-times fa-xs"></i> Hết
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge"
+                                      style="background: var(--coffee-cream); color: var(--coffee-dark);">
+                                    [[${product.categoryId}]]
+                                </span>
+                            </td>
+                            <td class="align-middle text-center">
+                                <a th:href="@{/admin/products/edit/{id}(id=${product.id})}"
+                                   class="btn btn-action-sm btn-outline-info"
+                                   title="Sửa">
+                                    <i class="fas fa-edit fa-xs"></i>
+                                </a>
+                                <a th:href="@{/admin/products/delete/{id}(id=${product.id})}"
+                                   class="btn btn-action-sm btn-outline-danger"
+                                   title="Xóa"
+                                   onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                    <i class="fas fa-trash fa-xs"></i>
+                                </a>
+                                <a th:href="@{/admin/products/detail/{id}(id=${product.id})}"
+                                   class="btn btn-action-sm btn-outline-secondary"
+                                   title="Xem chi tiết">
+                                    <i class="fas fa-eye fa-xs"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(products)}">
+                            <td colspan="8" class="text-center py-5">
+                                <div style="color: var(--coffee-light); font-size: 4rem; margin-bottom: 20px;">
+                                    <i class="fas fa-mug-hot"></i>
+                                </div>
+                                <h5 style="color: var(--coffee-dark);">Chưa có sản phẩm nào</h5>
+                                <p class="text-muted">Hãy thêm sản phẩm đầu tiên để bắt đầu kinh doanh!</p>
+                                <a th:href="@{/admin/products/add}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-plus me-1"></i> Thêm sản phẩm đầu tiên
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- THỐNG KÊ NHANH -->
+            <div class="px-4 mt-4">
+                <div class="row animate-fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card stat-card">
+                            <div class="card-body pt-4 pb-3">
+                                <div class="text-center mb-2" style="color: #667eea;">
+                                    <i class="fas fa-mug-hot fa-2x"></i>
+                                </div>
+                                <h6 class="text-uppercase text-muted mb-2 text-center">Tổng sản phẩm</h6>
+                                <h3 class="text-center mb-0" style="color: var(--coffee-dark);">
+                                    [[${#lists.size(products)}]]
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card stat-card">
+                            <div class="card-body pt-4 pb-3">
+                                <div class="text-center mb-2" style="color: #4CAF50;">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                                <h6 class="text-uppercase text-muted mb-2 text-center">Có sẵn</h6>
+                                <h3 class="text-center mb-0" style="color: var(--coffee-dark);">
+                                    [[${products.?[isAvailable == true].size()}]]
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card stat-card">
+                            <div class="card-body pt-4 pb-3">
+                                <div class="text-center mb-2" style="color: #FF9800;">
+                                    <i class="fas fa-star fa-2x"></i>
+                                </div>
+                                <h6 class="text-uppercase text-muted mb-2 text-center">Nổi bật</h6>
+                                <h3 class="text-center mb-0" style="color: var(--coffee-dark);">
+                                    [[${products.?[isFeatured == true].size()}]]
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card stat-card">
+                            <div class="card-body pt-4 pb-3">
+                                <div class="text-center mb-2" style="color: #f44336;">
+                                    <i class="fas fa-tag fa-2x"></i>
+                                </div>
+                                <h6 class="text-uppercase text-muted mb-2 text-center">Giảm giá</h6>
+                                <h3 class="text-center mb-0" style="color: var(--coffee-dark);">
+                                    [[${products.?[discountPercent > 0].size()}]]
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="mt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center py-3 border-top">
+                    <small class="text-muted">
+                        Hiển thị <strong th:text="${#lists.size(products)}">0</strong> sản phẩm
+                    </small>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto dismiss alerts after 5 seconds
+    setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(alert => {
+            new bootstrap.Alert(alert).close();
+        });
+    }, 5000);
+
+    // Add hover effect to table rows
+    document.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fa';
+        });
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+</script>
+</body>
+</html>

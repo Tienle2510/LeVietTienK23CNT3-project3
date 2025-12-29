@@ -1,0 +1,77 @@
+/* Custom styles for Coffee Shop */
+
+:root {
+    --primary-brown: #8B4513;
+    --secondary-brown: #D2691E;
+    --light-cream: #FFF8DC;
+    --dark-brown: #654321;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(rgba(139, 69, 19, 0.8), rgba(139, 69, 19, 0.9)),
+                url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085');
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+/* Product cards */
+.product-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: var(--primary-brown);
+    border-color: var(--primary-brown);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-brown);
+    border-color: var(--secondary-brown);
+}
+
+/* Admin sidebar */
+.admin-sidebar {
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--dark-brown) 0%, var(--primary-brown) 100%);
+    color: white;
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+    color: white;
+    background: rgba(255,255,255,0.1);
+    border-left: 3px solid var(--secondary-brown);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0 !important;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
